@@ -1,4 +1,4 @@
-### nosqlist
+# nosqlist
 
 NoSQL Data Library For NodeJS. Primarily developed for use with Single Table Design on NoSQL databases(primarily DynamoDB) spoken about in the talk given by Rick Houlihan: https://www.youtube.com/watch?v=6yqfmXiZTlM&t=2137s. 
 
