@@ -1,6 +1,6 @@
 {
   "name": "nosqlist",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "NoSQL Object Mapper for designing multiple access patterns.",
   "main": "index.js",
   "scripts": {
