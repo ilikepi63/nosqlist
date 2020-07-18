@@ -1,0 +1,24 @@
+{
+  "name": "nosqlist",
+  "version": "0.0.1",
+  "description": "NoSQL Object Mapper for designing multiple access patterns.",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ilikepi63/nosqlist.git"
+  },
+  "keywords": [
+    "nosql",
+    "mapper",
+    "object"
+  ],
+  "author": "Cameron Harris",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ilikepi63/nosqlist/issues"
+  },
+  "homepage": "https://github.com/ilikepi63/nosqlist#readme"
+}
