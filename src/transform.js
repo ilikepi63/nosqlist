@@ -8,6 +8,6 @@ const convertValue                  = require("./convertValue");
  * @param {Object} schema - Schema used to convert values
  * @return {Object} - Converted Object
  */
-const transform = (data, schema) => mapEntries( schema, (value, key) => convertValue( key, value, data ));
+const transform = (schema, data) => mapEntries( schema, (value, key) => convertValue( key, value, data ));
 
 module.exports = transform;
