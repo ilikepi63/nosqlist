@@ -17,7 +17,6 @@ Current solutions either work similarly to ORM's or are too opinionated for defi
 The primary idea of this library is to be able to interpolate values into keys so as to satisfy specific access patterns on a data model. This way developers can also divide the data that is being saved between access pattern logic and actual data that is to be saved: 
 
 ```
-
 const {transform}              = require("nosqlist");
 
 
@@ -88,6 +87,4 @@ transform(userSchema, userBillGates);
 //     UserType: 'Member',
 //     createdAt: 1595094213343
 // }
-
-
 ```
