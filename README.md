@@ -17,7 +17,6 @@ Current solutions either work similarly to ORM's or are too opinionated for defi
 The primary idea of this library is to be able to interpolate values into keys so as to satisfy specific access patterns on a data model. This way developers can also divide the data that is being saved between access pattern logic and actual data that is to be saved: 
 
 ```
-
 const {transform}              = require("nosqlist");
 
 
@@ -71,7 +70,7 @@ const userSchema = {
 
 
 
-transform(metadata, metaSchema);
+transform(metaSchema, metadata);
 // {
 //     PK: 'ORG#Microsoft',
 //     SK: 'METADATA#Microsoft',
@@ -80,7 +79,7 @@ transform(metadata, metaSchema);
 //     createdAt: 1595094213336
 // }
 
-transform(userBillGates, userSchema);
+transform(userSchema, userBillGates);
 // {
 //     PK: 'ORG#Microsoft',
 //     SK: 'USER#Bill Gates',
@@ -88,36 +87,4 @@ transform(userBillGates, userSchema);
 //     UserType: 'Member',
 //     createdAt: 1595094213343
 // }
-
-transform(userSatyaNadella, userSchema);
-// {
-//     PK: 'ORG#Microsoft',
-//     SK: 'USER#Satya Nadella',
-//     UserName: 'Satya Nadella',
-//     UserType: 'Admin',
-//     createdAt: 1595094213343
-//   }
-
-transform( metadataAmazon, metaSchema);
-// {
-//   PK: 'ORG#Amazon',
-//   SK: 'METADATA#Amazon',
-//   OrgName: 'Amazon',
-//   PlantType: 'Pro',
-//   createdAt: 1595094213343
-// }
-
-transform( userJeffBezos, userSchema);
-// {
-//   PK: 'ORG#Amazon',
-//   SK: 'USER#Jeff Bezos',
-//   UserName: 'Jeff Bezos',
-//   UserType: 'Admin',
-//   createdAt: 1595094213344
-// }
-
-
-
-
-
 ```
