@@ -26,7 +26,7 @@ describe('Transform', function () {
                 firstName: 'Cameron',
                 lastName: 'Harris',
                 age: '26.00'
-              }, transform( testData, schema ) );
+              }, transform( schema, testData ) );
         });
 
     });
