@@ -11,19 +11,19 @@ describe('Transform Multiple', function () {
     describe('Converts the given schema and data into Composite item collections', function () {
 
         it('Employee Dataset', () => {
-            assert.deepEqual( flatten( Employee ), employeeResult );
+            assert.deepEqual( flatten( {collection: Employee }), employeeResult );
         });
 
         it('Building Dataset', () => {
-            assert.deepEqual( flatten(Building), buildingResult );
+            assert.deepEqual( flatten({collection:Building }), buildingResult );
         });
 
         it('Banking Dataset', () => {
-            assert.deepEqual( flatten(Customer), result );
+            assert.deepEqual( flatten({collection:Customer}), result );
         });
 
         it('Organisation Dataset', () => {
-            assert.deepEqual( flatten(metaSchema), orgResult );
+            assert.deepEqual( flatten({collection: metaSchema}), orgResult );
         });
 
     });

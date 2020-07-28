@@ -2,7 +2,7 @@
 const result = {
     transaction: {
         PK: 'customer#{customerId}',
-        SK: '#account#accountId#transaction#{transactiondate}#{transactionId}',
+        SK: '#account#{accountId}#transaction#{transactiondate}#{transactionId}',
         '$name': 'transaction',
         '$key': '{id}',
         GSIPK: 'customer#{customerId}'
@@ -16,9 +16,9 @@ const result = {
     },
     account: {
         PK: 'customer#{customerId}',
-        SK: '#account#accountId',
+        SK: '#account#{accountId}',
         '$name': 'account',
-        '$key': 'accountId',
+        '$key': '{accountId}',
         GS1PK: '{accountId}'
     },
     Payment: {
@@ -59,7 +59,7 @@ const Purchase = {
 
 const Account = {
     $name: "account",
-    $key: "accountId",
+    $key: "{accountId}",
     "GS1PK": "{accountId}",
     transactionsByAccount: {
         schema: Transaction,
