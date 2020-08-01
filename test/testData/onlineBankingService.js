@@ -1,35 +1,38 @@
 // results
-const result = {
+const resultWithoutDefinition = {
     transaction: {
-        PK: 'customer#{customerId}',
-        SK: '#account#{accountId}#transaction#{transactiondate}#{transactionId}',
+        PK: '{customerId}',
+        SK: '{transactiondate}#{transactionId}',
         '$name': 'transaction',
         '$key': '{id}',
-        GSIPK: 'customer#{customerId}'
+        GSIPK: '{accountId}'
     },
     purchase: {
-        GSIPK: 'customer#{customerId}',
-        SK: 'purchase#{purchaseId}',
+        GSIPK: '{purchaseId}',
+        GSISK: "{purchaseTimestamp}",
+        SK: '{purchaseId}',
         '$name': 'purchase',
         '$key': '{purchaseId}',
-        PK: 'purchase#{purchaseId}'
+        PK: '{customerId}'
     },
     account: {
-        PK: 'customer#{customerId}',
-        SK: '#account#{accountId}',
+        PK: '{customerId}',
+        SK: '{accountId}',
         '$name': 'account',
         '$key': '{accountId}',
-        GS1PK: '{accountId}'
+        GSIPK: '{accountId}'
     },
     Payment: {
-        PK: 'customer#{customerId}',
-        SK: '#Payment#{paymentId}',
+        PK: '{customerId}',
+        SK: '{paymentId}',
         '$name': 'Payment',
-        '$key': '{paymentId}'
+        '$key': '{paymentId}',
+        GSIPK: '{accountId}',
+        GSISK: "{paymentId}#{paymentTime}"
     },
     customer: {
-        PK: 'customer#{customerId}',
-        SK: 'customer#{customerId}',
+        PK: '{customerId}',
+        SK: '{customerId}',
         '$name': 'customer',
         '$key': '{customerId}'
     }
@@ -54,29 +57,39 @@ const Transaction = {
 
 const Purchase = {
     $name: "purchase",
-    $key: "{purchaseId}"
+    $key: "{purchaseId}",
+    "GSIPK": "{purchaseId}",
+    "GSISK": "{purchaseTimestamp}",
+    productByPurchase : {
+        schema: Product,
+        key: {
+            hash: "GSIPK2",
+            range: "GSISK"
+        }
+    }
 };
 
 const Account = {
     $name: "account",
     $key: "{accountId}",
-    "GS1PK": "{accountId}",
+    "GSIPK": "{accountId}",
     transactionsByAccount: {
         schema: Transaction,
         key: {
             hash: "GSIPK",
             range: "SK"
         },
-        $key: "{transactiondate}#{transactionId}"
+        $key: '{transactiondate}#{transactionId}',
     },
-    purchaseByAccount: {
-        schema: Purchase,
+
+    paymentByAccount: {
+        schema: Payment,
         key: {
             hash: "GSIPK",
-            range: "SK"
+            range: "GSISK"
         },
-        $key: "{transactiondate}#{transactionId}"
-    }
+        $key: "{paymentId}#{paymentTime}"
+    },
 };
 
 const Summary = {
@@ -108,6 +121,13 @@ const Customer = {
             hash: "PK",
             range: "SK"
         },
+    },
+    purchasesByCustomer: {
+        schema: Purchase,
+        key: {
+            hash: "PK",
+            range: "SK"
+        }
     }
 };
 
@@ -119,5 +139,5 @@ module.exports = {
     Transaction,
     Payment,
     Product,
-    result
+    resultWithoutDefinition
 }

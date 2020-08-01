@@ -26,11 +26,6 @@ const metadata  = {
     planType: "Enterprise"
 };
 
-const metadataAmazon  = {
-    orgName: "Amazon",
-    planType: "Pro"
-};
-
 const userBillGates = {
     orgName: "Microsoft",
     UserName: "Bill Gates",
@@ -40,12 +35,6 @@ const userBillGates = {
 const userSatyaNadella = {
     orgName: "Microsoft",
     UserName: "Satya Nadella",
-    UserType: "Admin"
-};
-
-const userJeffBezos = {
-    orgName: "Amazon",
-    UserName: "Jeff Bezos",
     UserType: "Admin"
 };
 
@@ -69,7 +58,7 @@ const userSchema = {
 };
 
 
-
+// transform organisation
 transform(metaSchema, metadata);
 // {
 //     PK: 'ORG#Microsoft',
@@ -79,6 +68,7 @@ transform(metaSchema, metadata);
 //     createdAt: 1595094213336
 // }
 
+// tranform user
 transform(userSchema, userBillGates);
 // {
 //     PK: 'ORG#Microsoft',

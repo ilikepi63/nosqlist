@@ -1,15 +1,15 @@
 const employeeResult = {
     Meeting: {
         PK: 'Employee#{employeeId}',
-        SK: '#Meeting#{time}|{floor}.{room}',
+        SK: 'Meeting#{time}|{floor}.{room}',
         '$name': 'Meeting',
         '$key': '{time}|{floor}.{room}',
         GS1PK: 'Employee#{email}',
-        GS1SK: '#Meeting#{time}|{floor}.{room}'
+        GS1SK: 'Meeting#{time}|{floor}.{room}'
     },
     Ticket: {
         GS1PK: 'Employee#{employeeId}',
-        GS1SK: '#Meeting#{ticketId}',
+        GS1SK: 'Meeting#{ticketId}',
         '$name': 'Ticket',
         '$key': '{ticketId}',
         PK: 'Ticket#{ticketId}',
@@ -28,13 +28,13 @@ const employeeResult = {
 const buildingResult = {
     Meeting: {
       PK: 'Building#buildingId',
-      SK: '#Meeting#{time}',
+      SK: 'Meeting#{time}',
       '$name': 'Meeting',
       '$key': '{time}|{floor}.{room}'
     },
     Room: {
       PK: 'Building#buildingId',
-      SK: '#Room#RoomId',
+      SK: 'Room#RoomId',
       '$name': 'Room',
       '$key': 'RoomId'
     },

@@ -1,4 +1,4 @@
-const {isObject} = require("./utils");
+const { isObject, exists, ifExistsElse } = require("./utils");
 const mapEntries = require("./mapEntries");
 
 /** Concatenates a given name, delimiter and variable.
@@ -19,7 +19,7 @@ const convertToKey = (name, delimiter, variable) => `${name}${delimiter}${variab
  * @param {String} key - the key that identifies this entity
  * @return {String} - converted key. 
  */
-const generateHash = (hash, name, delimiter = "#", key, includeDef = true) => hash ? hash : !includeDef ? key : convertToKey(name, delimiter, key);
+const generateHash = (hash, name, delimiter, key, includeDef) => hash ? hash : !includeDef ? key : convertToKey(name, delimiter, key);
 
 /** Generates a range key from the give variables, if the range is set, then will add the newly created key
  *  onto the already existing range and return that.
@@ -30,13 +30,15 @@ const generateHash = (hash, name, delimiter = "#", key, includeDef = true) => ha
  * @param {String} key 
  * @return {String} - newly formed range key. 
  */
-const generateRange = (range, name, delimiter = "#", key, includeDef = true) => (range || range === '' ? range + delimiter + (!includeDef ? key : convertToKey(name, delimiter, key) ) : "");
+const generateRange = (range, name, delimiter, keyAttr, includeDef) => {
+    // create a notExists function that is the inverse of exists
+    const notExists = val => !exists(val);
 
-// const getName = (schema, key) => schema[nameKey];
+    const isEmptyString = val => val === "";
 
-// const delim = () => delimiter;
-
-// const getKeyFromSchema = schema => schema[schemaId];
+    return  ( notExists( range ) || isEmptyString(range) ) ?  (!includeDef ? keyAttr : convertToKey(name, delimiter, keyAttr) ) :
+                                                                    range + delimiter + (!includeDef ? keyAttr : convertToKey(name, delimiter, keyAttr) ) 
+};
 
 /** Takes in a given reference to a schema set, the key 
  *  point to the given schema within the schema set and 
@@ -57,6 +59,40 @@ const updateSchemaSet = (schemaSetReference, key, schemaDeltas) => {
 
 }
 
+/** Generates the default config parameters for the 
+ *  flat function
+ */
+const defaultParameters = obj => {
+
+    const exists = val => !(val === undefined || val === null);
+
+    if(!obj) return { nameKey : "$name", delimiter : "#", schemaKeyAttr : "$key", includeDef : true, headerKey : "$header"};
+
+    return {    nameKey         : exists(obj.nameKey) ? obj.nameKey : "$name", 
+                delimiter       : exists(obj.delimiter) ? obj.delimiter : "#", 
+                schemaKeyAttr   : exists(obj.schemaKeyAttr) ? obj.schemaKeyAttr : "$key", 
+                includeDef      : exists(obj.includeDef) ? obj.includeDef : true, 
+                headerKey       : exists(obj.headerKey) ? obj.headerKey : "$header"};
+}
+
+const generateKey = ( hash, range, name, keyAttr, { includeDef, delimiter } ) => {
+    return [
+        generateHash( hash, name, delimiter, keyAttr, includeDef ),
+        generateRange( range, name, delimiter, keyAttr, includeDef )
+    ];
+};
+
+
+const reduceSchemaEntries = fn => (acc, [key, value]) => {
+        if (isObject(value)) {
+            fn(value);
+        } else {
+            acc[key] = value;          
+        }
+        return acc;
+};
+
+
 /** Function that takes a nested Schema definition and creates a flattened
  *  map of the schema definitions and their names.
  * 
@@ -68,49 +104,58 @@ const updateSchemaSet = (schemaSetReference, key, schemaDeltas) => {
  * @param {String} name - the given name of the head schema of the current schema if different.
  * @param {String} keyAttr - the given id of the head schema of the current schema if different.
  */
-const flat = (obj = { nameKey : "$name", delimiter : "#", schemaKeyAttr : "$key", includeDef : true, headerKey : "$header"}) => ( schemas, {   currentSchema, 
+const flat = configObj => ( schemas, {   currentSchema, 
                             requiredKey, 
                             key, 
                             hash, 
                             range, 
                             name, 
                             keyAttr } ) => {
-
-    const { nameKey, delimiter, schemaKeyAttr, includeDef, headerKey} = obj;
-
-    // initialize object that holds the deltas.
-    const schemaDeltas = {};
+    
+    // get the default parameters and initialize the deltas for the schema iteration.
+    const   opts  = defaultParameters(configObj),
+            { nameKey, delimiter, schemaKeyAttr, includeDef, headerKey } = opts,
+            schemaDeltas = {};
 
     // if name and key attributes have been specified, use them, otherwise use the name and key of the schema.
-    const schemaName        = name      ? name      : currentSchema[nameKey];
-    const newKeyAttr        = keyAttr   ? keyAttr   : currentSchema[schemaKeyAttr];
+    const schemaName        = ifExistsElse( name, currentSchema[nameKey] );
+    const newKeyAttr        = ifExistsElse( keyAttr, currentSchema[schemaKeyAttr] );
 
-    // generate the hash and range key for the current schema.
-    const generatedHash     = generateHash( hash, schemaName, delimiter, newKeyAttr, includeDef );
-    const generatedRange    = generateRange( range, schemaName, delimiter, newKeyAttr, includeDef );
+    // generate the key for tge newly formed schema.
+    const [generatedHash, generatedRange]           = generateKey( hash, range, schemaName, newKeyAttr, {includeDef,delimiter});
 
-    // set the key of the deltas for this current schema.
+    const applyFlat = value => {
+
+        let nextSchemaHash = generatedHash, usedRange = generatedRange;
+        // if the key is not the same, then we use the new generated Hash
+        const keyHasBeenChanged = (newKey, oldKey ) => ( newKey.hash !== oldKey.hash ||  newKey.range !== oldKey.range ); 
+        if( value.key.hash !==  key.hash ){
+            // this means that it is branching off.
+            nextSchemaHash = generateHash( undefined, schemaName, delimiter, newKeyAttr, includeDef );
+        };
+        if( keyHasBeenChanged( value.key, key ) ){
+            // would need to generate a new hash
+            usedRange = null
+        };
+
+        // get the $header if it exists and use that key.
+        const headerCheckedHash = value[headerKey] ? convertToKey(schemaName, delimiter, value[headerKey], includeDef) : nextSchemaHash;
+
+        // if the usedRange is equal to the hash, that means this is the beginning of a hierarchy
+        // which means we want it to appear inside of the range of the top level item, but 
+        // not in the range of any of the proceeding items in the hierarchy.
+        if(exists(usedRange)) usedRange = generatedRange === generatedHash ? "" : generatedRange;
+        flat(opts)(schemas, { currentSchema: value.schema, requiredKey: requiredKey, key: value.key, hash: headerCheckedHash, range: usedRange, name: value[nameKey], keyAttr: value[schemaKeyAttr] })
+    };
+
+    // set the keys for the delta object.
     schemaDeltas[key.hash]  = generatedHash;
-    schemaDeltas[key.range] = generatedRange === "" ? generatedHash : generatedRange;
+    schemaDeltas[key.range] = generatedRange;
 
-    // iterate over each key/value in the current schema 
-    Object.entries(currentSchema)
-        .forEach(([key, value]) => {
+    // assign any other specific attributes (this is also where nested schemas are handled ) 
+    Object.assign( schemaDeltas, Object.entries(currentSchema).reduce( reduceSchemaEntries( applyFlat ), {}) );
 
-        // if it is an object then we assume it is a relationship
-        if (isObject(value)) {
-            const headerCheckedHash = value[headerKey] ? convertToKey(schemaName, delimiter, value[headerKey]) : generatedHash;
-
-            // recursively call the function on the schema 
-            flat(obj)(schemas, { currentSchema: value.schema, requiredKey: requiredKey, key: value.key, hash: headerCheckedHash, range: generatedRange, name: value[nameKey], keyAttr: value[schemaKeyAttr] });
-        } else {
-            // otherwise, if it is a standard type, then just add it to the deltas.
-            schemaDeltas[key] = value;
-        }
-
-    });
-
-    // assign to the schemas.
+    // assign to the collection of schemas.
     Object.assign(schemas, updateSchemaSet(schemas, currentSchema[nameKey], schemaDeltas));
 };
 
@@ -124,7 +169,7 @@ const flat = (obj = { nameKey : "$name", delimiter : "#", schemaKeyAttr : "$key"
 const ensureRequiredKeys = (schemas, requiredKey, nameKey = "$name", delimiter = "#", schemaKeyAttr = "$key", includeDef = true ) => {
     return mapEntries(schemas, schema => {
         if (!schema[requiredKey.hash]) {
-            const hash = includeDef ? generateHash(null, schema[nameKey], delimiter, schema[schemaKeyAttr]) :  schema[schemaKeyAttr];
+            const hash = generateHash(null, schema[nameKey], delimiter, schema[schemaKeyAttr], includeDef);
 
             schema[requiredKey.hash]    = hash;
             schema[requiredKey.range]   = hash;
@@ -140,8 +185,8 @@ const ensureRequiredKeys = (schemas, requiredKey, nameKey = "$name", delimiter =
  * @param {Object} requiredKey - Required Key for the collection 
  * @param {Object} config - config for the flatten structure. 
  */
-const flatten = (collection, requiredKey = { hash: "PK", range: "SK" }, config)=> {
-
+const flatten = ({config, collection, requiredKey = { hash: "PK", range: "SK" } })=> {
+    
     let schemas = {};
 
     flat( config )( schemas, { currentSchema: collection, key: requiredKey, requiredKey } );
@@ -154,4 +199,8 @@ const flatten = (collection, requiredKey = { hash: "PK", range: "SK" }, config)=
 };
 
 
-module.exports = flatten;
+module.exports = {
+    flatten,
+    generateRange,
+    generateHash
+};

@@ -53,15 +53,13 @@ describe('Transform', function () {
     const metaSchema = {
         "PK": "ORG#{orgName}",
         "SK": "METADATA#{orgName}",
-        "OrgName": "{orgName}",
-        "PlantType": "{planType}",
     };
 
     const userSchema = {
         "PK": "ORG#{orgName}",
         "SK": "USER#{UserName}",
-        "UserName": "{UserName}",
-        "UserType": "{UserType}",
+        // "UserName": "{UserName}",
+        // "UserType": "{UserType}",
     };
 
 
@@ -81,8 +79,8 @@ describe('Transform', function () {
             assert.deepEqual({
                 PK: 'ORG#Microsoft',
                 SK: 'METADATA#Microsoft',
-                OrgName: 'Microsoft',
-                PlantType: 'Enterprise',
+                orgName: 'Microsoft',
+                planType: 'Enterprise',
             }, transform(metaSchema, metadata ));
         });
 
@@ -93,6 +91,7 @@ describe('Transform', function () {
                     SK: 'USER#Bill Gates',
                     UserName: 'Bill Gates',
                     UserType: 'Member',
+                    orgName: "Microsoft"
                 }, transform( userSchema, userBillGates));
         });
 
@@ -103,6 +102,7 @@ describe('Transform', function () {
                 SK: 'USER#Satya Nadella',
                 UserName: 'Satya Nadella',
                 UserType: 'Admin',
+                orgName: "Microsoft"
             }, transform(userSchema, userSatyaNadella));
         });
 
@@ -110,8 +110,9 @@ describe('Transform', function () {
             assert.deepEqual({
                 PK: 'ORG#Amazon',
                 SK: 'METADATA#Amazon',
-                OrgName: 'Amazon',
-                PlantType: 'Pro',
+                orgName: "Amazon",
+                planType: "Pro",
+                
             }, transform(metaSchema,metadataAmazon));
         });
 
@@ -121,6 +122,7 @@ describe('Transform', function () {
                     SK: 'USER#Jeff Bezos',
                         UserName: 'Jeff Bezos',
                             UserType: 'Admin',
+                            orgName: "Amazon"
             }, transform( userSchema, userJeffBezos));
         });
 

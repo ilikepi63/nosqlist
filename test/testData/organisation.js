@@ -34,36 +34,30 @@ const customer1 = {
 
 const ticketSchema = {
     "$name": "TICKET",
-    "$key": "number"
+    "$key": "{number}"
 };
 
 const customerSchema = {
     "$name": "CUSTOMER",
-    "$key": "email",
+    "$key": "{email}",
 }
 
 const userSchema = {
     "$name": "USER",
-    "$key": "UserName",
+    "$key": "{UserName}",
     "Tickets": {
         key: {
             hash: "PK",
             range: "SK"
         },
-        // $name: "TICKET",
-        // $key: "number",
-        type: "composite",
         schema: ticketSchema
     },
     "Customers": {
         schema: customerSchema,
         key: {
-            hash: "GSI2SK",
-            range: "GSI2PK"
+            hash: "GSI2PK",
+            range: "GSI2SK"
         },
-        $name: "Customer",
-        $key: "email",
-        type: "composite"
     }
 };
 
@@ -71,7 +65,7 @@ const userSchema = {
 
 const metaSchema = {
     "$name": "ORG",
-    "$key": "orgName",
+    "$key": "{orgName}",
     "Users": //userSchema,
     {
         schema: userSchema,
@@ -80,50 +74,45 @@ const metaSchema = {
             range: "SK"
         },
         $name: "USER",
-        $key: "UserName",
-        type: "composite"
     },
     "Customers": //customerSchema,
     {
         schema: customerSchema,
         key: {
-            hash: "GSI1SK",
-            range: "GSI1PK"
+            hash: "GSI1PK",
+            range: "GSI1SK"
         },
-        $name: "Customer",
-        $key: "email",
-        type: "composite"
     }
 };
 
 const orgResult = {
     TICKET: {
-      PK: 'ORG#orgName',
-      SK: '#USER#UserName#TICKET#number',
+      PK: 'ORG#{orgName}',
+      SK: 'USER#{UserName}#TICKET#{number}',
       '$name': 'TICKET',
-      '$key': 'number'
+      '$key': '{number}'
     },
     CUSTOMER: {
-      GSI2SK: 'ORG#orgName',
-      GSI2PK: '#USER#UserName#Customer#email',
+        GSI2PK: "USER#{UserName}",
+        GSI2SK: "CUSTOMER#{email}",
       '$name': 'CUSTOMER',
-      '$key': 'email',
-      GSI1SK: 'ORG#orgName',
-      GSI1PK: '#Customer#email',
-      PK: 'CUSTOMER#email',
-      SK: 'CUSTOMER#email'
+      '$key': '{email}',
+      GSI1PK: 'ORG#{orgName}',
+      GSI1SK: 'CUSTOMER#{email}',
+      PK: 'CUSTOMER#{email}',
+      SK: 'CUSTOMER#{email}'
     },
     USER: {
-      PK: 'ORG#orgName',
-      SK: '#USER#UserName',
+      PK: 'ORG#{orgName}',
+      SK: 'USER#{UserName}',
       '$name': 'USER',
-      '$key': 'UserName'
+      '$key': '{UserName}'
     },
     ORG: {
-      PK: 'ORG#orgName',
-      SK: 'ORG#orgName',
+      PK: 'ORG#{orgName}',
+      SK: 'ORG#{orgName}',
       '$name': 'ORG',
-      '$key': 'orgName'
+      '$key': '{orgName}'
     }
   }
   
