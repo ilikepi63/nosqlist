@@ -7,7 +7,6 @@ describe('Map Entries', function () {
         const obj = { name: 'John', surname: 'Doe', age: 32 };
 
         it('Should return a copy of the object, testing a return of an array of [key, value]', () => {
-
             assert.deepEqual(obj, mapEntries(obj, (value, key) => [key, value]));
         });
 
