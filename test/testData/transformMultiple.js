@@ -121,8 +121,6 @@ const Building = {
             hash: "PK",
             range: "SK"
         },
-        $key: "",
-        $name: "Room"
     },
 };
 

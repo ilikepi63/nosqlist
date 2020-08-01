@@ -1,24 +1,25 @@
 # nosqlist
 
-NoSQL Data Library For NodeJS. Primarily developed for use with Single Table Design on NoSQL databases(primarily DynamoDB) spoken about in the talk given by Rick Houlihan: https://www.youtube.com/watch?v=6yqfmXiZTlM&t=2137s. 
+NoSQL Data Library For NodeJS. Primarily developed for use with Single Table Design on NoSQL databases(mostly DynamoDB) spoken about in the talks presented by Rick Houlihan at AWS Re:Invent: https://www.youtube.com/watch?v=6yqfmXiZTlM&t=2137s. 
 
 ## Motivation
 
-Current solutions either work similarly to ORM's or are too opinionated for defining schema's within a Single Table Design context. The idea was to rather create schema that are self-descriptive, could be used within a function and don't really require any state. So, a simple interpolater on an key/value pairing sufficed. 
+Current Single Table solutions either work similarly to ORM's or are too opinionated for defining schema. The idea was to rather create schema that are self-descriptive, could be used within a function and don't really require any state. So, a simple interpolater on a key/value pairing sufficed. 
 
 ## Installation
 
 ```
 npm install nosqlist
 
-const {transform} = require("nosqlist");
+const {transform, flatten} = require("nosqlist");
 ```
 
 ## Usage
 
+
 ### transform
 
-The primary idea of this library is to be able to interpolate values into keys so as to satisfy specific access patterns on a data model. This way developers can also divide the data that is being saved between access pattern logic and actual data that is to be saved: 
+The primary idea of this function is to be able to interpolate values into keys of a data object to satisfy specific access patterns on a data model. This way developers can also separate keys of an entity into those that are used for access and those that hold needed data: 
 
 ```
 const {transform}              = require("nosqlist");
@@ -83,12 +84,13 @@ transform(userSchema, userBillGates);
 // }
 ```
 
+
 ### flatten 
 
-The flatten function would take a hierarchy of defined schemas and then generate a index of schemas that are the flatten 
-version of those. An example: 
+The flatten function takes a hierarchy of defined schemas and then generates an index of schemas that are the flattened
+version of the hierarchy. For example:
 
-Let's say the requirement is we have to model an organisation(as above) where we have the organisation, users and tickets. 
+Let's say the requirement is we have to model an organisation where we have the organisation, users and tickets. 
 
 Our access patterns would be: 
 
@@ -108,9 +110,11 @@ const Ticket = {
 const User = {
     $name: "User",
     $key: "{emailAddress}",
-    // another relationship here
+    // we then define a relationship for an access pattern: 
     getTicketsByUser: {
+        // define which schema was referenced here:
         schema: Ticket,
+        // define the key that is used within this hierarchy
         key: {
             hash: "PK",
             range: "SK"
@@ -121,7 +125,7 @@ const User = {
 const Org = {
     $name: "Org",
     $key: "{orgId}",
-    // we then define a relationship for an access pattern: 
+    // relationship between user and organisation
     getUsersByOrg: {
         // define which schema was referenced here:
         schema: User,
@@ -159,12 +163,11 @@ flatten({collection: Org});
 } 
 ```
 
-You can see here that when we pass Ticket data with the "transform" function, it will output the data in a way that we can 
-query it to get all of the tickets via Org and User, as well as getting a specific ticket. 
+You can see here that when we invoke the transform function on the Ticket data, it will output data that makes it able to query the ticket via organisation and user. This would also make way for other access patterns such as getting a specific ticket. 
 
 ## Some Ending Comments
 
-Primarily building this for fun and to learn more about the different use cases for single table designa and how people are using
+I've been building this library for fun and to learn more about the different use cases for single table designa and how people are using
 it. If you have any use cases that the library doesn't cater/work for, then I am very open to criticism as long as it is constructive :)
 
 Hope you enjoy it! 
