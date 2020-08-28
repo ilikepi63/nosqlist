@@ -37,7 +37,7 @@ const generateRange = (range, name, delimiter, keyAttr, includeDef) => {
     const isEmptyString = val => val === "";
 
     return  ( notExists( range ) || isEmptyString(range) ) ?  (!includeDef ? keyAttr : convertToKey(name, delimiter, keyAttr) ) :
-                                                                    range + delimiter + (!includeDef ? keyAttr : convertToKey(name, delimiter, keyAttr) ) 
+        range + delimiter + (!includeDef ? keyAttr : convertToKey(name, delimiter, keyAttr) ); 
 };
 
 /** Takes in a given reference to a schema set, the key 
@@ -57,7 +57,7 @@ const updateSchemaSet = (schemaSetReference, key, schemaDeltas) => {
 
     return newSchemaSet;
 
-}
+};
 
 /** Generates the default config parameters for the 
  *  flat function
@@ -69,11 +69,11 @@ const defaultParameters = obj => {
     if(!obj) return { nameKey : "$name", delimiter : "#", schemaKeyAttr : "$key", includeDef : true, headerKey : "$header"};
 
     return {    nameKey         : exists(obj.nameKey) ? obj.nameKey : "$name", 
-                delimiter       : exists(obj.delimiter) ? obj.delimiter : "#", 
-                schemaKeyAttr   : exists(obj.schemaKeyAttr) ? obj.schemaKeyAttr : "$key", 
-                includeDef      : exists(obj.includeDef) ? obj.includeDef : true, 
-                headerKey       : exists(obj.headerKey) ? obj.headerKey : "$header"};
-}
+        delimiter       : exists(obj.delimiter) ? obj.delimiter : "#", 
+        schemaKeyAttr   : exists(obj.schemaKeyAttr) ? obj.schemaKeyAttr : "$key", 
+        includeDef      : exists(obj.includeDef) ? obj.includeDef : true, 
+        headerKey       : exists(obj.headerKey) ? obj.headerKey : "$header"};
+};
 
 const generateKey = ( hash, range, name, keyAttr, { includeDef, delimiter } ) => {
     return [
@@ -84,12 +84,12 @@ const generateKey = ( hash, range, name, keyAttr, { includeDef, delimiter } ) =>
 
 
 const reduceSchemaEntries = fn => (acc, [key, value]) => {
-        if (isObject(value)) {
-            fn(value);
-        } else {
-            acc[key] = value;          
-        }
-        return acc;
+    if (isObject(value)) {
+        fn(value);
+    } else {
+        acc[key] = value;          
+    }
+    return acc;
 };
 
 
@@ -105,17 +105,17 @@ const reduceSchemaEntries = fn => (acc, [key, value]) => {
  * @param {String} keyAttr - the given id of the head schema of the current schema if different.
  */
 const flat = configObj => ( schemas, {   currentSchema, 
-                            requiredKey, 
-                            key, 
-                            hash, 
-                            range, 
-                            name, 
-                            keyAttr } ) => {
+    requiredKey, 
+    key, 
+    hash, 
+    range, 
+    name, 
+    keyAttr } ) => {
     
     // get the default parameters and initialize the deltas for the schema iteration.
     const   opts  = defaultParameters(configObj),
-            { nameKey, delimiter, schemaKeyAttr, includeDef, headerKey } = opts,
-            schemaDeltas = {};
+        { nameKey, delimiter, schemaKeyAttr, includeDef, headerKey } = opts,
+        schemaDeltas = {};
 
     // if name and key attributes have been specified, use them, otherwise use the name and key of the schema.
     const schemaName        = ifExistsElse( name, currentSchema[nameKey] );
@@ -132,11 +132,11 @@ const flat = configObj => ( schemas, {   currentSchema,
         if( value.key.hash !==  key.hash ){
             // this means that it is branching off.
             nextSchemaHash = generateHash( undefined, schemaName, delimiter, newKeyAttr, includeDef );
-        };
+        }
         if( keyHasBeenChanged( value.key, key ) ){
             // would need to generate a new hash
-            usedRange = null
-        };
+            usedRange = null;
+        }
 
         // get the $header if it exists and use that key.
         const headerCheckedHash = value[headerKey] ? convertToKey(schemaName, delimiter, value[headerKey], includeDef) : nextSchemaHash;
@@ -145,7 +145,7 @@ const flat = configObj => ( schemas, {   currentSchema,
         // which means we want it to appear inside of the range of the top level item, but 
         // not in the range of any of the proceeding items in the hierarchy.
         if(exists(usedRange)) usedRange = generatedRange === generatedHash ? "" : generatedRange;
-        flat(opts)(schemas, { currentSchema: value.schema, requiredKey: requiredKey, key: value.key, hash: headerCheckedHash, range: usedRange, name: value[nameKey], keyAttr: value[schemaKeyAttr] })
+        flat(opts)(schemas, { currentSchema: value.schema, requiredKey: requiredKey, key: value.key, hash: headerCheckedHash, range: usedRange, name: value[nameKey], keyAttr: value[schemaKeyAttr] });
     };
 
     // set the keys for the delta object.
@@ -176,8 +176,8 @@ const ensureRequiredKeys = (schemas, requiredKey, nameKey = "$name", delimiter =
         }
 
         return schema;
-    })
-}
+    });
+};
 
 /** Primary function that wraps the flat function.
  * 

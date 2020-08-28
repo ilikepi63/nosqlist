@@ -1,59 +1,59 @@
 const employeeResult = {
     Meeting: {
-        PK: 'Employee#{employeeId}',
-        SK: 'Meeting#{time}|{floor}.{room}',
-        '$name': 'Meeting',
-        '$key': '{time}|{floor}.{room}',
-        GS1PK: 'Employee#{email}',
-        GS1SK: 'Meeting#{time}|{floor}.{room}'
+        PK: "Employee#{employeeId}",
+        SK: "Meeting#{time}|{floor}.{room}",
+        "$name": "Meeting",
+        "$key": "{time}|{floor}.{room}",
+        GS1PK: "Employee#{email}",
+        GS1SK: "Meeting#{time}|{floor}.{room}"
     },
     Ticket: {
-        GS1PK: 'Employee#{employeeId}',
-        GS1SK: 'Meeting#{ticketId}',
-        '$name': 'Ticket',
-        '$key': '{ticketId}',
-        PK: 'Ticket#{ticketId}',
-        SK: 'Ticket#{ticketId}'
+        GS1PK: "Employee#{employeeId}",
+        GS1SK: "Meeting#{ticketId}",
+        "$name": "Ticket",
+        "$key": "{ticketId}",
+        PK: "Ticket#{ticketId}",
+        SK: "Ticket#{ticketId}"
     },
     Employee: {
-        PK: 'Employee#{employeeId}',
-        SK: 'Employee#{employeeId}',
-        '$name': 'Employee',
-        '$key': '{employeeId}',
-        GS1PK: '{email}',
-        GS1SK: '{employeeId}'
+        PK: "Employee#{employeeId}",
+        SK: "Employee#{employeeId}",
+        "$name": "Employee",
+        "$key": "{employeeId}",
+        GS1PK: "{email}",
+        GS1SK: "{employeeId}"
     }
 };
 
 const buildingResult = {
     Meeting: {
-      PK: 'Building#buildingId',
-      SK: 'Meeting#{time}',
-      '$name': 'Meeting',
-      '$key': '{time}|{floor}.{room}'
+        PK: "Building#buildingId",
+        SK: "Meeting#{time}",
+        "$name": "Meeting",
+        "$key": "{time}|{floor}.{room}"
     },
     Room: {
-      PK: 'Building#buildingId',
-      SK: 'Room#RoomId',
-      '$name': 'Room',
-      '$key': 'RoomId'
+        PK: "Building#buildingId",
+        SK: "Room#RoomId",
+        "$name": "Room",
+        "$key": "RoomId"
     },
     Building: {
-      PK: 'Building#buildingId',
-      SK: 'Building#buildingId',
-      '$name': 'Building',
-      '$key': 'buildingId'
+        PK: "Building#buildingId",
+        SK: "Building#buildingId",
+        "$name": "Building",
+        "$key": "buildingId"
     }
-  };
-
-const project = {
-    "$name": "Project",
-    "$key": "projectId"
 };
 
-const TimeCard = {
+// const project = {
+//     "$name": "Project",
+//     "$key": "projectId"
+// };
 
-};
+// const TimeCard = {
+
+// };
 
 const Room = {
     "$name": "Room",
@@ -69,7 +69,7 @@ const Ticket = {
 const Meeting = {
     "$name": "Meeting",
     "$key": "{time}|{floor}.{room}",
-}
+};
 
 const Employee = {
     "$name": "Employee",
@@ -126,14 +126,14 @@ const Building = {
 
 
 
-const Message = {
-    "$name": "Message",
-    "$key": "messageId"
-}
+// const Message = {
+//     "$name": "Message",
+//     "$key": "messageId"
+// };
 
 module.exports = {
     Employee,
     Building,
     employeeResult,
     buildingResult
-}
+};
