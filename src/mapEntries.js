@@ -11,7 +11,7 @@ const mapEntries = (o, fn) => Object.fromEntries(
 
         const result = fn(value, key);
 
-        return Array.isArray(result) ? result : [key, result]
+        return Array.isArray(result) ? result : [key, result];
 
     })
 

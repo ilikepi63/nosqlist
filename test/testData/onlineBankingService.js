@@ -1,40 +1,40 @@
 // results
 const resultWithoutDefinition = {
     transaction: {
-        PK: '{customerId}',
-        SK: '{transactiondate}#{transactionId}',
-        '$name': 'transaction',
-        '$key': '{id}',
-        GSIPK: '{accountId}'
+        PK: "{customerId}",
+        SK: "{transactiondate}#{transactionId}",
+        "$name": "transaction",
+        "$key": "{id}",
+        GSIPK: "{accountId}"
     },
     purchase: {
-        GSIPK: '{purchaseId}',
+        GSIPK: "{purchaseId}",
         GSISK: "{purchaseTimestamp}",
-        SK: '{purchaseId}',
-        '$name': 'purchase',
-        '$key': '{purchaseId}',
-        PK: '{customerId}'
+        SK: "{purchaseId}",
+        "$name": "purchase",
+        "$key": "{purchaseId}",
+        PK: "{customerId}"
     },
     account: {
-        PK: '{customerId}',
-        SK: '{accountId}',
-        '$name': 'account',
-        '$key': '{accountId}',
-        GSIPK: '{accountId}'
+        PK: "{customerId}",
+        SK: "{accountId}",
+        "$name": "account",
+        "$key": "{accountId}",
+        GSIPK: "{accountId}"
     },
     Payment: {
-        PK: '{customerId}',
-        SK: '{paymentId}',
-        '$name': 'Payment',
-        '$key': '{paymentId}',
-        GSIPK: '{accountId}',
+        PK: "{customerId}",
+        SK: "{paymentId}",
+        "$name": "Payment",
+        "$key": "{paymentId}",
+        GSIPK: "{accountId}",
         GSISK: "{paymentId}#{paymentTime}"
     },
     customer: {
-        PK: '{customerId}',
-        SK: '{customerId}',
-        '$name': 'customer',
-        '$key': '{customerId}'
+        PK: "{customerId}",
+        SK: "{customerId}",
+        "$name": "customer",
+        "$key": "{customerId}"
     }
 };
 
@@ -48,7 +48,7 @@ const Product = {
 const Payment = {
     $name: "Payment",
     $key: "{paymentId}"
-}
+};
 
 const Transaction = {
     $name: "transaction",
@@ -79,7 +79,7 @@ const Account = {
             hash: "GSIPK",
             range: "SK"
         },
-        $key: '{transactiondate}#{transactionId}',
+        $key: "{transactiondate}#{transactionId}",
     },
 
     paymentByAccount: {
@@ -95,7 +95,7 @@ const Account = {
 const Summary = {
     $name: "Summary",
     $key: "summary"
-}
+};
 
 const Customer = {
     $name: "customer",
@@ -140,4 +140,4 @@ module.exports = {
     Payment,
     Product,
     resultWithoutDefinition
-}
+};
