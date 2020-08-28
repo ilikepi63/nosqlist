@@ -15,7 +15,7 @@
 const supplant = (o, string) => string.replace(/{([^{}]*)}/g,
     (a, b) => {
         const r = o[b];
-        return typeof r === 'string' || typeof r === 'number' ? r : a;
+        return typeof r === "string" || typeof r === "number" ? r : a;
     }
 );
 
